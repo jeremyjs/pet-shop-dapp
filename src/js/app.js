@@ -77,11 +77,23 @@ App = {
 
       return adoptionInstance.getAdopters.call();
     }).then(function(adopters) {
-      for (i = 0; i < adopters.length; i++) {
-        if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-          $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+          console.log(error);
         }
-      }
+  
+        // TODO: allow multiple account selection
+        var account = accounts[0];
+    
+        for (i = 0; i < adopters.length; i++) {
+          if (adopters[i] === account) {
+            $('.panel-pet').eq(i).find('button').text('You Adopted!').attr('disabled', true);
+          }
+          else if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
+            $('.panel-pet').eq(i).find('button').text('Already Adopted').attr('disabled', true);
+          }
+        }
+      })
     }).catch(function(err) {
       console.log(err.message);
     });
